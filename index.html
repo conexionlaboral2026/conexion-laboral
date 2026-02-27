@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>CONEXIÓN LABORAL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="style.css">
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<style>
+.logo-cl {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  width: 130px; /* tamaño ideal para este logo horizontal */
+  height: auto;
+  z-index: 1000;
+}
+
+@media (max-width: 600px) {
+  .logo-cl {
+    width: 95px;
+  }
+}
+</style>
+</head>
+
+<body>
+  <img src="img/logoCL.jpg" alt="Conexión Laboral" class="logo-cl">
+
+<header>
+  <div>
+      <h1>CONEXIÓN LABORAL</h1>
+      <h2 class="subtitulo-local">Ensenada y alrededores</h2>
+  </div>
+  <p>Nexo directo para facilitar la búsqueda de trabajo y personal.</p>
+</header>
+
+<section class="card-form">
+  <h3>Login / Registro</h3>
+  <input type="email" id="email" placeholder="Correo electrónico">
+  <input type="password" id="password" placeholder="Contraseña">
+  <p style="font-size:12px;color:#555;">Mínimo 6 caracteres</p>
+  <button onclick="login()">Ingresar</button>
+  <button onclick="registrar()">Registrarse</button>
+  <button onclick="logout()">Cerrar sesión</button>
+  <p id="usuario-activo"></p>
+</section>
+
+<main class="container">
+<div class="columns">
+
+<!-- ================= BUSCO TRABAJO ================= -->
+<section class="column">
+<h2>Busco Trabajo</h2>
+
+<div class="card-form">
+<input type="text" id="nombre-t" placeholder="Nombre completo">
+<input type="number" id="edad-t" placeholder="Edad">
+<input type="text" id="tel-t" placeholder="WhatsApp o Teléfono">
+<input type="email" id="email-t" placeholder="Email de contacto">
+<input type="text" id="direccion-t" placeholder="Ciudad / Dirección">
+<textarea id="msg-t" placeholder="¿Qué tareas realizás?"></textarea>
+
+<label for="foto-t" class="custom-file">Seleccionar foto (opcional)</label>
+<input type="file" id="foto-t" accept="image/*" style="display:none">
+
+<label for="cv-t" class="custom-file">Seleccionar CV PDF (opcional)</label>
+<input type="file" id="cv-t" accept="application/pdf" style="display:none">
+
+<label style="font-size:14px; display:block; margin-top:10px;">
+  <input type="checkbox" id="ocultar-datos">
+  Ocultar mis datos personales (dirección, email, teléfono y CV)
+</label>
+
+<button onclick="publicarTrabajo()">Publicar</button>
+</div>
+
+<div id="lista-trabajo"></div>
+</section>
+
+<!-- ================= BUSCO PERSONAL ================= -->
+<section class="column">
+<h2>Busco Personal</h2>
+
+<div class="card-form">
+<input type="text" id="nombre-e" placeholder="Empresa o Nombre">
+<input type="text" id="tel-e" placeholder="Teléfono">
+<input type="text" id="direccion-e" placeholder="Ciudad / Dirección">
+<textarea id="msg-e" placeholder="¿Qué puesto ofrecés?"></textarea>
+
+<label style="font-size:14px; display:block; margin-top:10px;">
+  <input type="checkbox" id="ocultar-datos-e">
+  Ocultar mis datos personales (teléfono y dirección)
+</label>
+
+<button onclick="publicarEmpleo()">Publicar</button>
+</div>
+
+<div id="lista-empleo"></div>
+</section>
+
+</div>
+
+<!-- ================= ÉXITOS ================= -->
+<section class="exito">
+<h2>¿Encontraste trabajo aquí?</h2>
+
+<div class="card-form">
+<textarea id="msg-exito" placeholder="Contanos tu experiencia..."></textarea>
+<button class="btn-exito" onclick="publicarExito()">Publicar comentario</button>
+</div>
+
+<div id="lista-exitos"></div>
+</section>
+
+<!-- ================= SOBRE EL CREADOR ================= -->
+<section class="creador">
+<img src="img/miguelfria.jpg" class="foto-creador">
+<div>
+<h3>Sobre el creador</h3>
+<p>
+Soy Miguel Fría, creador de Conexión Laboral.
+Esta plataforma nació con la idea de facilitar una conexión más cercana,
+directa y real entre personas que buscan trabajo.
+Mi objetivo es que esta comunidad crezca y se fortalezca ayudando a generar oportunidades reales.
+</p>
+</div>
+</section>
+
+<!-- ================= BOTONES MODALES ================= -->
+<div class="botones-info">
+  <button id="abrirModal" class="btn-modal">
+    ¿Cómo surgió Conexión Laboral?
+  </button>
+
+  <button id="abrirModalAyuda" class="btn-ayuda">
+    ¿Cómo ayudar? – Compartí por WSP
+  </button>
+</div>
+
+<!-- ================= MODAL 1 ================= -->
+<div id="modalInfo" class="modal">
+  <div class="modal-contenido">
+    <span id="cerrarModal" class="cerrar">&times;</span>
+    <h3>¿Cómo surgió Conexión Laboral?</h3>
+
+    <p>
+      Conexión Laboral <strong>no es una empresa</strong>, sino un proyecto pensado como servicio gratuito,
+      creado por Miguel Fría durante unas vacaciones en Villa Gesell y realizado en Ensenada.
+    </p>
+
+    <p>
+      Este proyecto busca simplificar el proceso, sin intermediarios,
+      como antes cuando las oportunidades surgían de boca en boca.
+      Se intentó simular eso, y fue la base de la idea.
+    </p>
+
+    <p>
+      Si alguien no sabe cómo usarlo, un familiar o un amigo puede ayudarlo.
+      Porque <strong>¿quién está en contra de ayudar a los demás?</strong> aunque parezca mentira aun hay personas que no cuentan con las herramientas o la sabiduria para ingresar a paginas muy engorrosas, fue pensada para ellas, y a partir de ahi para quien la necesite.
+    </p>
+
+    <p>
+      En este caso se eligió una paleta de colores similar a Facebook a modo de homenaje y tambien
+      para generar familiaridad, confianza y facilitar la interaccion.
+    </p>
+
+  </div>
+</div>
+
+<!-- ================= MODAL 2 ================= -->
+<div id="modalAyuda" class="modal">
+  <div class="modal-contenido">
+    <span id="cerrarModalAyuda" class="cerrar">&times;</span>
+    <h3>¿Cómo ayudar?</h3>
+
+    <p>Conexión Laboral necesita colaboradores, no detractores.</p>
+
+    <p>
+      La forma más simple de ayudar es
+      <strong>compartiendo el link por WhatsApp</strong>.
+    </p>
+
+    <p>
+      Tal vez, con solo compartir un enlace,
+      estés generando una oportunidad real para alguien que lo necesite. GRACIAS
+    </p>
+
+    <a 
+      href="https://wa.me/?text=Te%20comparto%20Conexión%20Laboral%20un%20proyecto%20gratuito%20para%20buscar%20trabajo"
+      target="_blank"
+      class="btn-whatsapp"
+    >
+      Compartir por WhatsApp
+    </a>
+
+  </div>
+</div>
+
+<!-- ================= NUEVA SECCIÓN SOLICITUDES ================= -->
+<section class="card-form" id="seccion-solicitudes" style="display:none;">
+  <h3>📩 Solicitudes de contacto</h3>
+  <div id="lista-solicitudes"></div>
+</section>
+
+<p class="legal">
+Esta plataforma solicita únicamente datos mínimos de contacto.
+La información publicada es responsabilidad exclusiva del usuario que la comparte.
+</p>
+
+</main>
+
+<footer>
+© 2026 CONEXIÓN LABORAL
+<a href="mailto:conexionlaboral2026@gmail.com">
+  conexionlaboral2026@gmail.com
+</a>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
