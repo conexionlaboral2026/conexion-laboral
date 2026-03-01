@@ -354,14 +354,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const abrirAyuda = document.getElementById("abrirModalAyuda");
   const cerrarAyuda = document.getElementById("cerrarModalAyuda");
 
+  const modalVIP = document.getElementById("modalVIP");
+const abrirModalVIP = document.getElementById("abrirModalVIP");
+const cerrarModalVIP = document.getElementById("cerrarModalVIP");
+  
   if(abrirInfo) abrirInfo.addEventListener("click", () => modalInfo.style.display = "flex");
   if(cerrarInfo) cerrarInfo.addEventListener("click", () => modalInfo.style.display = "none");
 
   if(abrirAyuda) abrirAyuda.addEventListener("click", () => modalAyuda.style.display = "flex");
   if(cerrarAyuda) cerrarAyuda.addEventListener("click", () => modalAyuda.style.display = "none");
 
+  if (abrirModalVIP) abrirModalVIP.addEventListener("click", () => modalVIP.style.display = "flex");
+if (cerrarModalVIP) cerrarModalVIP.addEventListener("click", () => modalVIP.style.display = "none");
+  
   window.addEventListener("click", (e) => {
     if(e.target === modalInfo) modalInfo.style.display = "none";
     if(e.target === modalAyuda) modalAyuda.style.display = "none";
+    if (e.target === modalVIP) modalVIP.style.display = "none";
   });
+
 });
