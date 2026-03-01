@@ -247,3 +247,19 @@ footer {
 .btn-whatsapp:hover {
     background-color: #1ebe5d;
 }
+.btn-apoyo {
+  background-color: #000;        /* Fondo negro */
+  color: #d4af37;                /* Texto dorado */
+  border: 2px solid #d4af37;     /* Borde dorado */
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Efecto al pasar el mouse */
+.btn-apoyo:hover {
+  background-color: #d4af37;     /* Fondo dorado */
+  color: #000;                  /* Texto negro */
+}
